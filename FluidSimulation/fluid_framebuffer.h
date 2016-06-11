@@ -8,57 +8,63 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
-class FBfluid {
+#include <iostream>
+
+class FluidFB {
 private:
 	GLuint fbPhysicalStepPre;
 	GLuint fbPhysicalStepPost;
+	GLuint fbPhysicalStepPostBack;
 	GLuint fbNeighborPush;
 	GLuint fbNeighborBlind;
 	GLuint pos, vel, prop, etc, neighbor, dep;
-	GLuint depPhysicalStepPre, depPhysicalStepPost, depNeighborPush, depNeighborBlind;
+	GLuint posback, velback;
+	GLuint depPhysicalStepPre, depPhysicalStepPost, depPhysicalStepPostBack, depNeighborPush, depNeighborBlind;
 	GLsizei particleSpaceW, particleSpaceH;
 	GLsizei neighborSpaceW, neighborSpaceH;
 
+	GLuint shdSprite;
+	GLuint uniSPmatModelView;
+	GLuint uniSPmatProjection;
+	GLuint uniSPwidth;
+	GLuint uniSPheight;
+	GLuint uniSPbias;
+	GLuint uniSPscale;
+	GLuint vboZeropoint;
+
+	void drawBuffer(GLuint buffer, float x, float y, float scale, float bias);
+
 public:
-	FBfluid(GLsizei psw, GLsizei psh, GLsizei nsw, GLsizei nsh)
-		: particleSpaceW(psw), particleSpaceH(psh), neighborSpaceW(nsw), neighborSpaceH(nsh) {}
+	FluidFB() {}
+	FluidFB(GLsizei psw, GLsizei psh, GLsizei nsw, GLsizei nsh)
+		: particleSpaceW(psw), particleSpaceH(psh), neighborSpaceW(nsw), neighborSpaceH(nsh) {
+		std::cout << "FrameBuffer particleSpaceW: " << particleSpaceW << std::endl;
+		std::cout << "FrameBuffer particleSpaceH: " << particleSpaceH << std::endl;
+		std::cout << "FrameBuffer neighborSpaceW: " << neighborSpaceW << std::endl;
+		std::cout << "FrameBuffer neighborSpaceH: " << neighborSpaceH << std::endl;
+	}
 
 	void generate();
-	void outputPhysicalStepPre() { glBindFramebuffer(GL_FRAMEBUFFER, fbPhysicalStepPre); }
-	void outputPhysicalStepPost() { glBindFramebuffer(GL_FRAMEBUFFER, fbPhysicalStepPost); }
-	void outputNeighborPush() { glBindFramebuffer(GL_FRAMEBUFFER, fbNeighborPush); }
-	void outputNeighborBlind() { glBindFramebuffer(GL_FRAMEBUFFER, fbNeighborBlind); }
-	void outputScreen() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
-	void inputPhysicalStepPre() {
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, pos);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, neighbor);
-	}
-	void inputPhysicalStepPost() {
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, pos);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, vel);
-		glActiveTexture(GL_TEXTURE2);
-		glBindTexture(GL_TEXTURE_2D, prop);
-		glActiveTexture(GL_TEXTURE3);
-		glBindTexture(GL_TEXTURE_2D, neighbor);
-	}
-	void inputNeighborPush() {
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, pos);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, etc);
-	}
-	void inputNeighborBlind() {
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, neighbor);
-	}
-	void inputVTF() {
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, pos);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, prop);
-	}
+	void init(
+		unsigned int particleMax,
+		float sep,
+		float physicalSpaceX,
+		float physicalSpaceY,
+		float physicalSpaceZ);
+
+	void debugdraw();
+	void swap();
+	void bind();
+
+	void outputPhysicalStepPre() { glViewport(0, 0, particleSpaceW, particleSpaceH); glBindFramebuffer(GL_FRAMEBUFFER, fbPhysicalStepPre); }
+	void outputPhysicalStepPost() { glViewport(0, 0, particleSpaceW, particleSpaceH); glBindFramebuffer(GL_FRAMEBUFFER, fbPhysicalStepPostBack); }
+	void outputNeighborPush() { glViewport(0, 0, neighborSpaceW, neighborSpaceH); glBindFramebuffer(GL_FRAMEBUFFER, fbNeighborPush); }
+	void outputNeighborBlind() { glViewport(0, 0, particleSpaceW, particleSpaceH); glBindFramebuffer(GL_FRAMEBUFFER, fbNeighborBlind); }
+	void outputScreen() { glViewport(0, 0, particleSpaceW, particleSpaceH); glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+
+	GLuint mapPosition() { return pos; }
+	GLuint mapVelocity() { return vel; }
+	GLuint mapProperty() { return prop; }
+	GLuint mapETC() { return etc; }
+	GLuint mapNeighbor() { return neighbor; }
 };

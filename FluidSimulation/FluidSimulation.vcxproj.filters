@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="셰이더 파일">
+      <UniqueIdentifier>{78b3a9c6-420e-4d38-accb-f6b3c1a8a5ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -30,6 +33,18 @@
     <ClCompile Include="fluid_framebuffer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="lodepng.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="fluid_ui.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debug.h">
@@ -41,5 +56,88 @@
     <ClInclude Include="fluid_framebuffer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="fluid.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="lodepng.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="mat.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="vec.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="fluid_ui.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fluid_render_v.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="fluid_render_g.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="fluid_render_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="linecube_v.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="linecube_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="sprite_v.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="sprite_g.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="sprite_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="neighbor_push_v.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="neighbor_push_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="neighbor_blind_v.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="neighbor_blind_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="physical_step_pre_v.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="physical_step_pre_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="neighbor_grid.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="kernel.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="physical.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="physical_step_post_v.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="physical_step_post_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="map.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>

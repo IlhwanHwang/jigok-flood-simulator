@@ -148,13 +148,46 @@
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="fluid.cpp" />
     <ClCompile Include="fluid_framebuffer.cpp" />
+    <ClCompile Include="fluid_ui.cpp" />
     <ClCompile Include="key.cpp" />
+    <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="shader.cpp" />
+    <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debug.h" />
+    <ClInclude Include="fluid.h" />
     <ClInclude Include="fluid_framebuffer.h" />
+    <ClInclude Include="fluid_ui.h" />
     <ClInclude Include="key.h" />
+    <ClInclude Include="lodepng.h" />
+    <ClInclude Include="mat.h" />
+    <ClInclude Include="shader.h" />
+    <ClInclude Include="texture.h" />
+    <ClInclude Include="vec.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fluid_render_f.glsl" />
+    <None Include="fluid_render_g.glsl" />
+    <None Include="fluid_render_v.glsl" />
+    <None Include="kernel.glsl" />
+    <None Include="linecube_f.glsl" />
+    <None Include="linecube_v.glsl" />
+    <None Include="map.glsl" />
+    <None Include="neighbor_blind_v.glsl" />
+    <None Include="neighbor_grid.glsl" />
+    <None Include="neighbor_push_f.glsl" />
+    <None Include="neighbor_push_v.glsl" />
+    <None Include="neighbor_blind_f.glsl" />
+    <None Include="physical.glsl" />
+    <None Include="physical_step_post_f.glsl" />
+    <None Include="physical_step_post_v.glsl" />
+    <None Include="physical_step_pre_f.glsl" />
+    <None Include="physical_step_pre_v.glsl" />
+    <None Include="sprite_f.glsl" />
+    <None Include="sprite_g.glsl" />
+    <None Include="sprite_v.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

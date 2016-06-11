@@ -54,5 +54,8 @@ void fberrorecho() {
 	case GL_FRAMEBUFFER_UNSUPPORTED:
 		cout << "Framebuffer is unsupported." << endl;
 		break;
+	default:
+		cout << "Other kind of error occured." << endl;
+		break;
 	}
 }

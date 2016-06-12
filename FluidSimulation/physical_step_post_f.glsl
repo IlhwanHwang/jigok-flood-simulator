@@ -130,7 +130,7 @@ void main() {
 
 	vec3 world = vec3(physicalSpaceX, physicalSpaceY, physicalSpaceZ);
 	for (int i = 0; i < wallnum; i++) {
-		vec3 wallpos = wallset[i] * world + h * wallnorm[i];
+		vec3 wallpos = wallset[i] * world + 2.0 * h * wallnorm[i];
 		float dx = max(0.0, dot(wallpos - pos, wallnorm[i]));
 		forceWall += dx * wallnorm[i] * physicalWallK;
 		forceWall -= physicalWallDamp * dot(vel, wallnorm[i]) * wallnorm[i] * density * sign(dx);

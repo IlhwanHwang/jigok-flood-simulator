@@ -17,6 +17,7 @@ private:
 	static int mouse_px, mouse_py;
 	static bool pressed;
 	Texture texCircle;
+	Texture texColormap;
 
 	GLuint shdRender;
 	GLuint uniRDmatModelView;
@@ -42,6 +43,6 @@ public:
 		GLuint vboParticleForEach,
 		unsigned int particleMax,
 		GLuint mapPosition,
-		GLuint mapVelocity,
-		GLuint mapETC);
+		GLuint mapETC,
+		GLuint mapProp);
 };

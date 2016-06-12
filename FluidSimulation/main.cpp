@@ -16,10 +16,10 @@ Fluid fluid;
 void update(int cnt) {
 	glutTimerFunc(16, update, cnt + 1);
 
-	if (Key::keyCheckOn('a')) {
+	//if (Key::keyCheckOn('a')) {
 		fluid.update();
 		errorecho("update");
-	}
+	//}
 
 	Key::keyUpdate();
 
@@ -34,7 +34,7 @@ void main(int argc, char **argv)
 	glutCreateWindow("AcornBusTwoRideEachTaste");
 	glewInit();
 
-	glEnable(GL_DEPTH);
+	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
 	glutTimerFunc(16, update, 0);

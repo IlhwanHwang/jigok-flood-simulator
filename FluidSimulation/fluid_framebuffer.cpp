@@ -177,7 +177,7 @@ void FluidFB::init(
 	std::vector<float> data;
 
 	float sep = h * 0.5;
-	float offset = h;
+	float offset = h * 2.0;
 	float sx, sy, sz;
 	float x, y, z;
 
@@ -286,7 +286,7 @@ void FluidFB::drawBuffer(GLuint buffer, float x, float y, float scale, float bia
 void FluidFB::debugdraw() {
 	drawBuffer(pos, -0.75, 0.75, 1.3, 0.0);
 	drawBuffer(vel, -0.45, 0.75, 2.0, 0.5);
-	drawBuffer(prop, -0.15, 0.75, 0.001, 0.0);
+	drawBuffer(prop, -0.15, 0.75, 0.0006, 0.5);
 	drawBuffer(etc, 0.15, 0.75, 1.0, 0.0);
 	drawBuffer(neighbor, 0.55, 0.75, 1.0, 0.0);
 }

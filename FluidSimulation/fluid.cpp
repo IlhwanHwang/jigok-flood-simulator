@@ -13,15 +13,15 @@
 #include "mat.h"
 
 Fluid::Fluid() :
-	particleSpaceW	(256), 
-	particleSpaceH	(256), 
+	particleSpaceW	(512), 
+	particleSpaceH	(512), 
 	particleMax		(particleSpaceW * particleSpaceH),
 
-	h	(0.0457),
+	h	(0.011425),
 
-	physicalSpaceX	(0.8),
+	physicalSpaceX	(0.4),
 	physicalSpaceY	(2.0),
-	physicalSpaceZ	(2.0),
+	physicalSpaceZ	(0.4),
 
 	neighborCellSizeX	(physicalSpaceX / floor(physicalSpaceX / h)),
 	neighborCellSizeY	(physicalSpaceY / floor(physicalSpaceY / h)),
@@ -30,7 +30,7 @@ Fluid::Fluid() :
 	neighborCellNumX	((unsigned int)(physicalSpaceX / neighborCellSizeX)),
 	neighborCellNumY	((unsigned int)(physicalSpaceY / neighborCellSizeY)),
 	neighborCellNumZ	((unsigned int)(physicalSpaceZ / neighborCellSizeZ)),
-	neighborCellLength	(32),
+	neighborCellLength	(12),
 
 	neighborSpaceW(neighborCellNumX * neighborCellNumZ),
 	neighborSpaceH(neighborCellNumY * neighborCellLength)
@@ -157,7 +157,7 @@ void Fluid::uniformMap(GLuint program) {
 
 void Fluid::uniformPhysical(GLuint program) {
 	glUseProgram(program);
-	glUniform1f(glGetUniformLocation(program, "physicalDeltaTime"), 0.002);
+	glUniform1f(glGetUniformLocation(program, "physicalDeltaTime"), 0.001);
 	glUniform1f(glGetUniformLocation(program, "physicalSpaceX"), physicalSpaceX);
 	glUniform1f(glGetUniformLocation(program, "physicalSpaceY"), physicalSpaceY);
 	glUniform1f(glGetUniformLocation(program, "physicalSpaceZ"), physicalSpaceZ);
@@ -175,8 +175,8 @@ void Fluid::draw() {
 		vboParticleForEach,
 		particleMax,
 		fb.mapPosition(),
-		fb.mapVelocity(),
-		fb.mapETC());
+		fb.mapETC(),
+		fb.mapProperty());
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 

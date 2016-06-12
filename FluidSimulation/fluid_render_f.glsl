@@ -3,18 +3,16 @@
 in vec2 fTex;
 in vec2 fpid;
 
+uniform sampler2D mapProp;
 uniform sampler2D tex;
+uniform sampler2D mapColor;
 
 layout (location = 0) out vec4 pCol;
 
-#include "map.glsl"
-
 void main() {
-	//pCol = texture2D(tex, fTex);
-	//pCol = vec4(0.5, 0.5, 0.5, 1.0);
-
-	pCol = texture2D(mapPosition, fpid);
-
-	//if (pCol.a < 0.5)
-	//	discard;
+	vec2 prop = texture2D(mapProp, fpid).rg;
+	pCol = texture2D(tex, fTex);
+	if (pCol.a < 0.5)
+		discard;
+	pCol *= texture2D(mapColor, vec2(clamp(-prop.y * 0.0002 + 0.8, 0.01, 0.99), 0.0));
 }

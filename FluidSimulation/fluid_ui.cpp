@@ -45,6 +45,7 @@ void FluidUI::init(
 {
 	//Texture
 	texCircle.load("image\\circle.png");
+	texColormap.load("image\\colormap.png");
 
 	//Renderer
 	shdRender = glCreateProgram();
@@ -55,9 +56,10 @@ void FluidUI::init(
 
 	glUseProgram(shdRender);
 	glUniform1i(glGetUniformLocation(shdRender, "mapPosition"), 0);
-	glUniform1i(glGetUniformLocation(shdRender, "mapVelocity"), 1);
-	glUniform1i(glGetUniformLocation(shdRender, "mapETC"), 3);
-	glUniform1i(glGetUniformLocation(shdRender, "tex"), 5);
+	glUniform1i(glGetUniformLocation(shdRender, "mapETC"), 1);
+	glUniform1i(glGetUniformLocation(shdRender, "mapProp"), 2);
+	glUniform1i(glGetUniformLocation(shdRender, "tex"), 3);
+	glUniform1i(glGetUniformLocation(shdRender, "mapColor"), 4);
 	uniRDmatModelView = glGetUniformLocation(shdRender, "matModelView");
 	uniRDmatProjection = glGetUniformLocation(shdRender, "matProjection");
 
@@ -103,7 +105,7 @@ void FluidUI::init(
 	this->physicalSpaceX = physicalSpaceX;
 	this->physicalSpaceY = physicalSpaceY;
 	this->physicalSpaceZ = physicalSpaceZ;
-	viewDist = fmaxf(fmaxf(physicalSpaceX, physicalSpaceY), physicalSpaceZ);
+	viewDist = fmaxf(fmaxf(physicalSpaceX, physicalSpaceY), physicalSpaceZ) * 0.7;
 
 	glutMouseFunc(mousefunction);
 	glutMotionFunc(motionfunction);
@@ -113,8 +115,8 @@ void FluidUI::draw(
 	GLuint vboParticleForEach, 
 	unsigned int particleMax,
 	GLuint mapPosition,
-	GLuint mapVelocity, 
-	GLuint mapETC) 
+	GLuint mapETC,
+	GLuint mapProp)
 {
 	//Particle render
 	glUseProgram(shdRender);
@@ -122,11 +124,13 @@ void FluidUI::draw(
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, mapPosition);
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, mapVelocity);
-	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, mapETC);
-	glActiveTexture(GL_TEXTURE5);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, mapProp);
+	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, texCircle.tex());
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, texColormap.tex());
 
 	float scale = 100.0;
 

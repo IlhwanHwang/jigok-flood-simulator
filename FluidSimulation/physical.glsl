@@ -1,11 +1,11 @@
-const float particleMass = 0.02;
+const float particleMass = 0.0003125;
 const float physicalStiffness = 3.0;
 const float physicalRestDensity = 998.29;
 const float physicalViscosity = 3.5;
 const float physicalSurfaceTensionThres = 7.065;
 const float physicalSurfaceTension = 0.0728;
-const float physicalWallDamp = 10.0;
-const float physicalWallK = 10000000.0;
+const float physicalWallDamp = 100.0;
+const float physicalWallK = 100000000.0;
 
 uniform float physicalDeltaTime;
 uniform float physicalSpaceX;

@@ -164,6 +164,21 @@ void FluidFB::generate() {
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, etc, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depNeighborBlind, 0);
 	fberrorecho();
+
+	envResolutionX = 128;
+	envResolutionY = 128;
+	envResolutionZ = 128;
+
+	glGenTextures(1, &env);
+	glBindTexture(GL_TEXTURE_3D, env);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB32F, envResolutionX, envResolutionY, envResolutionZ, 0, GL_RGB, GL_FLOAT, NULL);
+
+	fberrorecho();
 }
 
 void FluidFB::init(
@@ -260,6 +275,46 @@ void FluidFB::init(
 	data.clear();
 
 	errorecho("FB init");
+}
+
+void FluidFB::initEnv(Model& model) {
+	GLuint fbTemp;
+	GLuint tempSlice, tempDep;
+
+	glGenTextures(1, &tempSlice);
+	glBindTexture(GL_TEXTURE_2D, tempSlice);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, envResolutionX, envResolutionY, 0, GL_RG, GL_FLOAT, NULL);
+
+	glGenTextures(1, &tempDep);
+	glBindTexture(GL_TEXTURE_2D, tempDep);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_INTENSITY);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, envResolutionX, envResolutionY, 0,
+		GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, NULL);
+
+	glGenFramebuffers(1, &fbTemp);
+	glBindFramebuffer(GL_FRAMEBUFFER, fbTemp);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tempSlice, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, tempDep, 0);
+
+
+
+
+
+
+
+	glDeleteFramebuffers(1, &fbTemp);
+	glDeleteTextures(1, &tempSlice);
+	glDeleteTextures(1, &tempDep);
 }
 
 void FluidFB::drawBuffer(GLuint buffer, float x, float y, float scale, float bias) {

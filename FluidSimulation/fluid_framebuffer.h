@@ -10,6 +10,8 @@
 
 #include <iostream>
 
+#include "model.h"
+
 class FluidFB {
 private:
 	GLuint fbPhysicalStepPre;
@@ -19,9 +21,15 @@ private:
 	GLuint fbNeighborBlind;
 	GLuint pos, vel, prop, etc, neighbor, dep;
 	GLuint posback, velback;
+	GLuint fbEnvironment;
+	GLuint env;
 	GLuint depPhysicalStepPre, depPhysicalStepPost, depPhysicalStepPostBack, depNeighborPush, depNeighborBlind;
 	GLsizei particleSpaceW, particleSpaceH;
 	GLsizei neighborSpaceW, neighborSpaceH;
+
+	unsigned int envResolutionX;
+	unsigned int envResolutionY;
+	unsigned int envResolutionZ;
 
 	GLuint shdSprite;
 	GLuint uniSPmatModelView;
@@ -51,6 +59,7 @@ public:
 		float physicalSpaceX,
 		float physicalSpaceY,
 		float physicalSpaceZ);
+	void initEnv(Model& model);
 
 	void debugdraw();
 	void swap();

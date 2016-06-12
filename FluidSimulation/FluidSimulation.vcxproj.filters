@@ -45,6 +45,9 @@
     <ClCompile Include="fluid_ui.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="debug.h">
@@ -75,6 +78,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="fluid_ui.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -137,6 +143,9 @@
       <Filter>셰이더 파일</Filter>
     </None>
     <None Include="map.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="slice_v.glsl">
       <Filter>셰이더 파일</Filter>
     </None>
   </ItemGroup>

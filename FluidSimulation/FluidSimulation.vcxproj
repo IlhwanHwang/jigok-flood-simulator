@@ -152,6 +152,7 @@
     <ClCompile Include="key.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="model.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
@@ -163,6 +164,7 @@
     <ClInclude Include="key.h" />
     <ClInclude Include="lodepng.h" />
     <ClInclude Include="mat.h" />
+    <ClInclude Include="model.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="vec.h" />
@@ -185,6 +187,7 @@
     <None Include="physical_step_post_v.glsl" />
     <None Include="physical_step_pre_f.glsl" />
     <None Include="physical_step_pre_v.glsl" />
+    <None Include="slice_v.glsl" />
     <None Include="sprite_f.glsl" />
     <None Include="sprite_g.glsl" />
     <None Include="sprite_v.glsl" />

@@ -3,7 +3,7 @@
 layout (points) in;
 layout (triangle_strip, max_vertices = 4) out;
 
-uniform float pRadius = 2.5;
+uniform float pRadius = 5.0;
 
 in vec2 gpid[];
 out vec2 fTex;

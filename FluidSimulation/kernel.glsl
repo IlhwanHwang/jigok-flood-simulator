@@ -1,4 +1,4 @@
-const float h = 0.011425;
+const float h = 0.02285;
 const float h2 = h * h;
 const float h3inv = 1.0 / h2 / h;
 const float h6inv = h3inv * h3inv;

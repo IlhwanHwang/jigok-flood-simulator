@@ -1,4 +1,4 @@
-const float particleMass = 0.0003125;
+const float particleMass = 0.0025;
 const float physicalStiffness = 3.0;
 const float physicalRestDensity = 998.29;
 const float physicalViscosity = 3.5;

@@ -105,10 +105,83 @@ void FluidUI::init(
 	this->physicalSpaceX = physicalSpaceX;
 	this->physicalSpaceY = physicalSpaceY;
 	this->physicalSpaceZ = physicalSpaceZ;
-	viewDist = fmaxf(fmaxf(physicalSpaceX, physicalSpaceY), physicalSpaceZ) * 0.7;
+	viewDist = fmaxf(fmaxf(physicalSpaceX, physicalSpaceY), physicalSpaceZ);
 
+	//Mouse functions
 	glutMouseFunc(mousefunction);
 	glutMotionFunc(motionfunction);
+	
+	//Phong
+	shdPhong = glCreateProgram();
+	loadShader(shdPhong, GL_VERTEX_SHADER, "phong_v.glsl");
+	loadShader(shdPhong, GL_FRAGMENT_SHADER, "phong_f.glsl");
+	linkProgram(shdPhong);
+
+	glUseProgram(shdPhong);
+	uniPHmatModelView = glGetUniformLocation(shdPhong, "matModelView");
+	uniPHmatProjection = glGetUniformLocation(shdPhong, "matProjection");
+
+	//Env test render
+	shdEnvTest = glCreateProgram();
+	loadShader(shdEnvTest, GL_VERTEX_SHADER, "env_test_v.glsl");
+	loadShader(shdEnvTest, GL_FRAGMENT_SHADER, "env_test_f.glsl");
+	linkProgram(shdEnvTest);
+
+	glUseProgram(shdEnvTest);
+	glUniform1i(glGetUniformLocation(shdEnvTest, "env"), 0);
+	uniETmatModelView = glGetUniformLocation(shdEnvTest, "matModelView");
+	uniETmatProjection = glGetUniformLocation(shdEnvTest, "matProjection");
+
+	glGenBuffers(1, &vboEnvTest);
+	glBindBuffer(GL_ARRAY_BUFFER, vboEnvTest);
+	for (int i = 0; i < 128; i++) {
+		float z = i / 64.0 - 1.0;
+		float w = i / 128.0;
+		data.push_back(-1.0);
+		data.push_back(-1.0);
+		data.push_back(z);
+		data.push_back(0.0);
+		data.push_back(0.0);
+		data.push_back(w);
+
+		data.push_back(1.0);
+		data.push_back(-1.0);
+		data.push_back(z);
+		data.push_back(1.0);
+		data.push_back(0.0);
+		data.push_back(w);
+
+		data.push_back(-1.0);
+		data.push_back(1.0);
+		data.push_back(z);
+		data.push_back(0.0);
+		data.push_back(1.0);
+		data.push_back(w);
+
+		data.push_back(1.0);
+		data.push_back(-1.0);
+		data.push_back(z);
+		data.push_back(1.0);
+		data.push_back(0.0);
+		data.push_back(w);
+
+		data.push_back(-1.0);
+		data.push_back(1.0);
+		data.push_back(z);
+		data.push_back(0.0);
+		data.push_back(1.0);
+		data.push_back(w);
+
+		data.push_back(1.0);
+		data.push_back(1.0);
+		data.push_back(z);
+		data.push_back(1.0);
+		data.push_back(1.0);
+		data.push_back(w);
+	}
+	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
+	vboEnvTestSize = data.size() / 6;
+	data.clear();
 }
 
 void FluidUI::draw(
@@ -116,7 +189,10 @@ void FluidUI::draw(
 	unsigned int particleMax,
 	GLuint mapPosition,
 	GLuint mapETC,
-	GLuint mapProp)
+	GLuint mapProp,
+	Model& modelEnv,
+	mat4& matEnvModelview,
+	GLuint mapWallField)
 {
 	//Particle render
 	glUseProgram(shdRender);
@@ -172,4 +248,31 @@ void FluidUI::draw(
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glDrawArrays(GL_LINES, 0, vboLinecubeSize);
 	glDisableVertexAttribArray(0);
+
+	/*
+	//Environment
+	glUseProgram(shdPhong);
+	glUniformMatrix4fv(uniLCmatModelView, 1, GL_TRUE, Matrix::Scale(scale, scale, scale) * matEnvModelview);
+	glUniformMatrix4fv(uniLCmatProjection, 1, GL_TRUE, projection);
+	modelEnv.draw();
+	*/
+
+	//Environment Test
+	modelview = Matrix::Scale(scale, scale, scale);
+	modelview *= Matrix::Scale(physicalSpaceX, physicalSpaceY, physicalSpaceZ);
+	glUseProgram(shdEnvTest);
+	glUniformMatrix4fv(uniETmatModelView, 1, GL_TRUE, modelview);
+	glUniformMatrix4fv(uniETmatProjection, 1, GL_TRUE, projection);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_3D, mapWallField);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vboEnvTest);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void*)0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void*)(sizeof(float) * 3));
+	glDrawArrays(GL_TRIANGLES, 0, vboEnvTestSize);
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 }

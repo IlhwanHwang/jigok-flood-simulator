@@ -97,6 +97,9 @@ void Model::load(const char* fn, const char* group) {
 			if (skip && group != NULL)
 				continue;
 
+			if (t.size() == 3)
+				continue;
+
 			bool quad = (t.size() == 5);
 
 			vector<string> p1 = tokenize(t[1], "/");
@@ -142,9 +145,15 @@ void Model::generate() {
 
 void Model::draw() {
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), 0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid *)(sizeof(vec3)));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid *)(sizeof(vec3) + sizeof(vec2)));
 	glDrawArrays(GL_TRIANGLES, 0, size);
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(2);
 	errorecho("Model drawing");
 }

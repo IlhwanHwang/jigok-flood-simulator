@@ -148,5 +148,26 @@
     <None Include="slice_v.glsl">
       <Filter>셰이더 파일</Filter>
     </None>
+    <None Include="slice_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="phong_v.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="phong_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="slice_pass_g.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="slice_line_g.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="env_test_v.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="env_test_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>

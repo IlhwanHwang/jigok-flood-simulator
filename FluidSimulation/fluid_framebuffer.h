@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include "model.h"
+#include "mat.h"
 
 class FluidFB {
 private:
@@ -59,7 +60,12 @@ public:
 		float physicalSpaceX,
 		float physicalSpaceY,
 		float physicalSpaceZ);
-	void initEnv(Model& model);
+	void initEnv(
+		Model& model,
+		mat4& matEnvModelview,
+		float physicalSpaceX,
+		float physicalSpaceY,
+		float physicalSpaceZ);
 
 	void debugdraw();
 	void swap();
@@ -76,4 +82,5 @@ public:
 	GLuint mapProperty() { return prop; }
 	GLuint mapETC() { return etc; }
 	GLuint mapNeighbor() { return neighbor; }
+	GLuint mapWallField() { return env; }
 };

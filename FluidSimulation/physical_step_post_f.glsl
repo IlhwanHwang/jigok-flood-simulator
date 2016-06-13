@@ -114,6 +114,11 @@ void main() {
 		forceWall -= physicalWallDamp * dot(vel, wallnorm[i]) * wallnorm[i] * density * sign(dx);
 	}
 
+	vec3 wall = texture(mapWallField, 
+		pos * vec3(1.0 / physicalSpaceX, 1.0 / physicalSpaceY, 1.0 / physicalSpaceZ)).rgb;
+	forceWall += wall * physicalWallK * 0.01;
+	forceWall -= physicalWallDamp * dot(vel, wall) * wall * density;
+
 	vec3 acc = (
 		forcePressure + 
 		forceViscosity + 

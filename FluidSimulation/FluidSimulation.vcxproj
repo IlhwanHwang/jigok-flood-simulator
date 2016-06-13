@@ -170,6 +170,8 @@
     <ClInclude Include="vec.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="env_test_f.glsl" />
+    <None Include="env_test_v.glsl" />
     <None Include="fluid_render_f.glsl" />
     <None Include="fluid_render_g.glsl" />
     <None Include="fluid_render_v.glsl" />
@@ -182,11 +184,16 @@
     <None Include="neighbor_push_f.glsl" />
     <None Include="neighbor_push_v.glsl" />
     <None Include="neighbor_blind_f.glsl" />
+    <None Include="phong_f.glsl" />
+    <None Include="phong_v.glsl" />
     <None Include="physical.glsl" />
     <None Include="physical_step_post_f.glsl" />
     <None Include="physical_step_post_v.glsl" />
     <None Include="physical_step_pre_f.glsl" />
     <None Include="physical_step_pre_v.glsl" />
+    <None Include="slice_f.glsl" />
+    <None Include="slice_line_g.glsl" />
+    <None Include="slice_pass_g.glsl" />
     <None Include="slice_v.glsl" />
     <None Include="sprite_f.glsl" />
     <None Include="sprite_g.glsl" />

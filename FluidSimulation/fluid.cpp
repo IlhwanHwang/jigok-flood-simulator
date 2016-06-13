@@ -19,9 +19,9 @@ Fluid::Fluid() :
 
 	h	(0.02285),
 
-	physicalSpaceX	(0.4),
+	physicalSpaceX	(2.0),
 	physicalSpaceY	(2.0),
-	physicalSpaceZ	(0.8),
+	physicalSpaceZ	(1.0),
 
 	neighborCellSizeX	(physicalSpaceX / floor(physicalSpaceX / h)),
 	neighborCellSizeY	(physicalSpaceY / floor(physicalSpaceY / h)),
@@ -52,10 +52,15 @@ void Fluid::init() {
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
 
+	//Enviroment model
+	modelEnv.load("Model\\postech_beta_2.obj");
+	matEnvModelview *= Matrix::Scale(2.0 * 2.0 / 806);
+
 	//Framebuffer
 	fb = FluidFB(particleSpaceW, particleSpaceH, neighborSpaceW, neighborSpaceH);
 	fb.generate();
 	fb.init(particleMax, h, physicalSpaceX, physicalSpaceY, physicalSpaceZ);
+	fb.initEnv(modelEnv, matEnvModelview, physicalSpaceX, physicalSpaceY, physicalSpaceZ);
 
 	//VBOs
 	std::vector<float> data;
@@ -151,6 +156,7 @@ void Fluid::uniformMap(GLuint program) {
 	glUniform1i(glGetUniformLocation(program, "mapProp"), 2);
 	glUniform1i(glGetUniformLocation(program, "mapETC"), 3);
 	glUniform1i(glGetUniformLocation(program, "mapNeighbor"), 4);
+	glUniform1i(glGetUniformLocation(program, "mapWallField"), 5);
 	glUniform2f(glGetUniformLocation(program, "particleSpaceOffset"), 0.5 / particleSpaceW, 0.5 / particleSpaceH);
 	glUniform2f(glGetUniformLocation(program, "neighborSpaceOffset"), 0.5 / neighborSpaceW, 0.5 / neighborSpaceH);
 }
@@ -176,7 +182,10 @@ void Fluid::draw() {
 		particleMax,
 		fb.mapPosition(),
 		fb.mapETC(),
-		fb.mapProperty());
+		fb.mapProperty(),
+		modelEnv,
+		matEnvModelview,
+		fb.mapWallField());
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 

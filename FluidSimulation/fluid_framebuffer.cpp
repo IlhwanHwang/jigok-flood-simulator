@@ -165,17 +165,17 @@ void FluidFB::generate() {
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depNeighborBlind, 0);
 	fberrorecho();
 
-	envResolutionX = 128;
-	envResolutionY = 128;
-	envResolutionZ = 128;
+	envResolutionX = 256;
+	envResolutionY = 256;
+	envResolutionZ = 256;
 
 	glGenTextures(1, &env);
 	glBindTexture(GL_TEXTURE_3D, env);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB32F, envResolutionX, envResolutionY, envResolutionZ, 0, GL_RGB, GL_FLOAT, NULL);
 
 	fberrorecho();
@@ -207,7 +207,7 @@ void FluidFB::init(
 	for (int i = 0; i < particleMax; i++) {
 		data.push_back(x);
 		data.push_back(y);
-		data.push_back(z);
+		data.push_back(physicalSpaceZ - z);
 		x += sep;
 		if (x > physicalSpaceX - offset) {
 			x = sx;
@@ -277,17 +277,14 @@ void FluidFB::init(
 	errorecho("FB init");
 }
 
-void FluidFB::initEnv(Model& model) {
+void FluidFB::initEnv(
+	Model& model, 
+	mat4& matEnvModelview,
+	float physicalSpaceX,
+	float physicalSpaceY,
+	float physicalSpaceZ) {
 	GLuint fbTemp;
-	GLuint tempSlice, tempDep;
-
-	glGenTextures(1, &tempSlice);
-	glBindTexture(GL_TEXTURE_2D, tempSlice);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG32F, envResolutionX, envResolutionY, 0, GL_RG, GL_FLOAT, NULL);
+	GLuint tempDep;
 
 	glGenTextures(1, &tempDep);
 	glBindTexture(GL_TEXTURE_2D, tempDep);
@@ -303,17 +300,59 @@ void FluidFB::initEnv(Model& model) {
 
 	glGenFramebuffers(1, &fbTemp);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbTemp);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tempSlice, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, tempDep, 0);
 
+	GLuint shdSlice, shdSliceLine, uniLayer, uniLayerLine;
+	shdSlice = glCreateProgram();
+	loadShader(shdSlice, GL_VERTEX_SHADER, "slice_v.glsl");
+	loadShader(shdSlice, GL_GEOMETRY_SHADER, "slice_pass_g.glsl");
+	loadShader(shdSlice, GL_FRAGMENT_SHADER, "slice_f.glsl");
+	linkProgram(shdSlice);
+	glUseProgram(shdSlice);
+	uniLayer = glGetUniformLocation(shdSlice, "layer");
+	glUniform1f(glGetUniformLocation(shdSlice, "scale"), (float)envResolutionZ);
 
+	mat4 fit;
+	fit = Matrix::Scale(1.0 / physicalSpaceX, 1.0 / physicalSpaceY, 1.0 / physicalSpaceZ);
+	glUniformMatrix4fv(glGetUniformLocation(shdSlice, "matFit"), 1, GL_TRUE, fit);
+	glUniformMatrix4fv(glGetUniformLocation(shdSlice, "matModelView"), 1, GL_TRUE, matEnvModelview);
 
+	shdSliceLine = glCreateProgram();
+	loadShader(shdSliceLine, GL_VERTEX_SHADER, "slice_v.glsl");
+	loadShader(shdSliceLine, GL_GEOMETRY_SHADER, "slice_line_g.glsl");
+	loadShader(shdSliceLine, GL_FRAGMENT_SHADER, "slice_f.glsl");
+	linkProgram(shdSliceLine);
+	glUseProgram(shdSliceLine);
 
+	uniLayerLine = glGetUniformLocation(shdSliceLine, "layer");
+	glUniform1f(glGetUniformLocation(shdSliceLine, "scale"), (float)envResolutionZ);
 
+	glUniformMatrix4fv(glGetUniformLocation(shdSliceLine, "matFit"), 1, GL_TRUE, fit);
+	glUniformMatrix4fv(glGetUniformLocation(shdSliceLine, "matModelView"), 1, GL_TRUE, matEnvModelview);
 
+	std::cout << "Building environment information" << std::endl;
 
+	glBindFramebuffer(GL_FRAMEBUFFER, fbTemp);
+	glViewport(0, 0, envResolutionX, envResolutionY);
+	for (int i = 0; i < envResolutionZ; i++) {
+		glFramebufferTexture3D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_3D, env, 0, i);
+		glClearColor(0.0, 0.0, 0.0, 0.0);
+		glClearDepth(1.0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glUseProgram(shdSlice);
+		glUniform1f(uniLayer, (float)i);
+		model.draw();
+		
+		glUseProgram(shdSliceLine);
+		glUniform1f(uniLayerLine, (float)i);
+		model.draw();
+		
+	}
+
+	glDeleteProgram(shdSlice);
+	glDeleteProgram(shdSliceLine);
 	glDeleteFramebuffers(1, &fbTemp);
-	glDeleteTextures(1, &tempSlice);
 	glDeleteTextures(1, &tempDep);
 }
 
@@ -344,6 +383,27 @@ void FluidFB::debugdraw() {
 	drawBuffer(prop, -0.15, 0.75, 0.0006, 0.5);
 	drawBuffer(etc, 0.15, 0.75, 1.0, 0.0);
 	drawBuffer(neighbor, 0.55, 0.75, 1.0, 0.0);
+
+	glUseProgram(0);
+	
+	glEnable(GL_TEXTURE_3D);
+	glBindTexture(GL_TEXTURE_3D, env);
+	glColor3f(1.0, 1.0, 1.0);
+
+	for (float f = 0.0; f < 1.0; f += 0.1) {
+		glBegin(GL_TRIANGLE_STRIP);
+		glTexCoord3f(0.0, 0.0, f * 0.1 + 0.5);
+		glVertex2f(-0.8 + f * 2.0, -0.7);
+		glTexCoord3f(1.0, 0.0, f * 0.1 + 0.5);
+		glVertex2f(-1.0 + f * 2.0, -0.7);
+		glTexCoord3f(0.0, 1.0, f * 0.1 + 0.5);
+		glVertex2f(-0.8 + f * 2.0, -0.9);
+		glTexCoord3f(1.0, 1.0, f * 0.1 + 0.5);
+		glVertex2f(-1.0 + f * 2.0, -0.9);
+		glEnd();
+	}
+
+	glDisable(GL_TEXTURE_3D);
 }
 
 static void swapi(GLuint& i, GLuint& j) {
@@ -371,4 +431,6 @@ void FluidFB::bind() {
 	glBindTexture(GL_TEXTURE_2D, etc);
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, neighbor);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_3D, env);
 }

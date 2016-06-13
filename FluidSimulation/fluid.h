@@ -8,6 +8,7 @@
 #include "fluid_framebuffer.h"
 #include "fluid_ui.h"
 #include "texture.h"
+#include "model.h"
 
 class Fluid {
 private:
@@ -53,6 +54,9 @@ private:
 
 	GLuint shdPhysicalStepPost;
 	GLuint uniPTphysicalDeltaTime;
+
+	Model modelEnv;
+	mat4 matEnvModelview;
 
 public:
 	Fluid();

@@ -20,7 +20,7 @@ private:
 	GLuint fbPhysicalStepPostBack;
 	GLuint fbNeighborPush;
 	GLuint fbNeighborBlind;
-	GLuint pos, vel, prop, etc, neighbor, dep;
+	GLuint pos, vel, prop, etc, norm, neighbor, dep;
 	GLuint posback, velback;
 	GLuint fbEnvironment;
 	GLuint env;
@@ -31,6 +31,9 @@ private:
 	unsigned int envResolutionX;
 	unsigned int envResolutionY;
 	unsigned int envResolutionZ;
+
+	unsigned int particleActive;
+	unsigned int particleMax;
 
 	GLuint shdSprite;
 	GLuint uniSPmatModelView;
@@ -53,10 +56,14 @@ public:
 		std::cout << "FrameBuffer neighborSpaceH: " << neighborSpaceH << std::endl;
 	}
 
-	void generate();
-	void init(
+	void generate(
+		unsigned int envResolutionX,
+		unsigned int envResolutionY,
+		unsigned int envResolutionZ);
+	void init(unsigned int particleMax);
+	void initPos(
 		unsigned int particleMax,
-		float sep,
+		float h,
 		float physicalSpaceX,
 		float physicalSpaceY,
 		float physicalSpaceZ);
@@ -83,4 +90,5 @@ public:
 	GLuint mapETC() { return etc; }
 	GLuint mapNeighbor() { return neighbor; }
 	GLuint mapWallField() { return env; }
+	GLuint mapNorm() { return norm; }
 };

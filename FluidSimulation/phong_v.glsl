@@ -7,10 +7,14 @@ layout (location = 2) in vec3 vNorm;
 uniform mat4 matProjection;
 uniform mat4 matModelView;
 
-out vec3 fNorm;
+out vec3 gNorm;
+out vec2 gTex;
+out vec4 gPos;
 
 void main() {
-	gl_Position = matProjection * matModelView * vPos / vPos.w;
+	gPos = matModelView * vPos / vPos.w;
+	gl_Position = matProjection * gPos;
 	vec4 norm = matModelView * vec4(vNorm, 0.0);
-	fNorm = normalize(norm.xyz);
+	gNorm = normalize(norm.xyz);
+	gTex = vTex;
 }

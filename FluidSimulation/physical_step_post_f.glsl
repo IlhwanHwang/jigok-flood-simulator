@@ -6,6 +6,7 @@ in vec2 fpid;
 
 layout (location = 0) out vec3 npos;
 layout (location = 1) out vec3 nvel;
+layout (location = 2) out vec3 norm;
 
 #include "neighbor_grid.glsl"
 #include "kernel.glsl"
@@ -114,10 +115,11 @@ void main() {
 		forceWall -= physicalWallDamp * dot(vel, wallnorm[i]) * wallnorm[i] * density * sign(dx);
 	}
 
-	vec3 wall = texture(mapWallField, 
-		pos * vec3(1.0 / physicalSpaceX, 1.0 / physicalSpaceY, 1.0 / physicalSpaceZ)).rgb;
-	forceWall += wall * physicalWallK * 0.01;
-	forceWall -= physicalWallDamp * dot(vel, wall) * wall * density;
+	vec3 wsamPos = pos / vec3(physicalSpaceX, physicalSpaceY, physicalSpaceZ);
+	vec3 wsamNorm = texture(mapWallField, wsamPos).rgb;
+
+	forceWall += wsamNorm * physicalWallK * length(wallfieldTexel);
+	forceWall -= physicalWallDamp * dot(vel, wsamNorm) * wsamNorm * density;
 
 	vec3 acc = (
 		forcePressure + 
@@ -129,4 +131,5 @@ void main() {
 
 	nvel = vel + acc * physicalDeltaTime;
 	npos = pos + nvel * physicalDeltaTime;
+	norm = normalize(colorFieldNormal);
 }

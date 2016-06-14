@@ -6,3 +6,4 @@ uniform sampler2D mapNeighbor;
 uniform sampler3D mapWallField;
 uniform vec2 particleSpaceOffset;
 uniform vec2 neighborSpaceOffset;
+uniform vec3 wallfieldTexel;

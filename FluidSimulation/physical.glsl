@@ -1,7 +1,7 @@
 const float particleMass = 0.0025;
 const float physicalStiffness = 3.0;
 const float physicalRestDensity = 998.29;
-const float physicalViscosity = 3.5;
+uniform float physicalViscosity = 3.5;
 const float physicalSurfaceTensionThres = 7.065;
 const float physicalSurfaceTension = 0.0728;
 const float physicalWallDamp = 100.0;

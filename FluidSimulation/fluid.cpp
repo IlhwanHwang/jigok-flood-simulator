@@ -6,6 +6,8 @@
 #include "fluid.h"
 #include "shader.h"
 #include "debug.h"
+#include "config.h"
+#include "key.h"
 
 #include <vector>
 #include <iostream>
@@ -19,9 +21,15 @@ Fluid::Fluid() :
 
 	h	(0.02285),
 
+#ifdef SCINARIO_NARROW
+	physicalSpaceX	(0.4),
+	physicalSpaceY	(2.0),
+	physicalSpaceZ	(1.0),
+#else
 	physicalSpaceX	(2.0),
 	physicalSpaceY	(2.0),
 	physicalSpaceZ	(1.0),
+#endif
 
 	neighborCellSizeX	(physicalSpaceX / floor(physicalSpaceX / h)),
 	neighborCellSizeY	(physicalSpaceY / floor(physicalSpaceY / h)),
@@ -32,8 +40,12 @@ Fluid::Fluid() :
 	neighborCellNumZ	((unsigned int)(physicalSpaceZ / neighborCellSizeZ)),
 	neighborCellLength	(12),
 
-	neighborSpaceW(neighborCellNumX * neighborCellNumZ),
-	neighborSpaceH(neighborCellNumY * neighborCellLength)
+	neighborSpaceW	(neighborCellNumX * neighborCellNumZ),
+	neighborSpaceH	(neighborCellNumY * neighborCellLength),
+
+	envResolutionX	(256),
+	envResolutionY	(256),
+	envResolutionZ	(128)
 {
 	std::cout << "particleSpaceW: " << particleSpaceW << std::endl;
 	std::cout << "particleSpaceH: " << particleSpaceH << std::endl;
@@ -53,15 +65,30 @@ void Fluid::init() {
 	glBindVertexArray(vao);
 
 	//Enviroment model
-	modelEnv.load("Model\\postech_beta_2.obj");
+	modelEnv.load("Model\\postech_gamma.obj");
 	matEnvModelview *= Matrix::Scale(2.0 * 2.0 / 806);
 
 	//Framebuffer
 	fb = FluidFB(particleSpaceW, particleSpaceH, neighborSpaceW, neighborSpaceH);
-	fb.generate();
-	fb.init(particleMax, h, physicalSpaceX, physicalSpaceY, physicalSpaceZ);
-	fb.initEnv(modelEnv, matEnvModelview, physicalSpaceX, physicalSpaceY, physicalSpaceZ);
-
+	fb.generate(
+		envResolutionX,
+		envResolutionY,
+		envResolutionZ);
+	fb.initPos(
+		particleMax,
+		h,
+		physicalSpaceX,
+		physicalSpaceY,
+		physicalSpaceZ);
+	fb.init(particleMax);
+#ifdef SCINARIO_JIGOK
+	fb.initEnv(
+		modelEnv,
+		matEnvModelview,
+		physicalSpaceX,
+		physicalSpaceY,
+		physicalSpaceZ);
+#endif
 	//VBOs
 	std::vector<float> data;
 
@@ -159,6 +186,7 @@ void Fluid::uniformMap(GLuint program) {
 	glUniform1i(glGetUniformLocation(program, "mapWallField"), 5);
 	glUniform2f(glGetUniformLocation(program, "particleSpaceOffset"), 0.5 / particleSpaceW, 0.5 / particleSpaceH);
 	glUniform2f(glGetUniformLocation(program, "neighborSpaceOffset"), 0.5 / neighborSpaceW, 0.5 / neighborSpaceH);
+	glUniform3f(glGetUniformLocation(program, "wallfieldTexel"), 1.0 / envResolutionX, 1.0 / envResolutionY, 1.0 / envResolutionZ);
 }
 
 void Fluid::uniformPhysical(GLuint program) {
@@ -167,10 +195,13 @@ void Fluid::uniformPhysical(GLuint program) {
 	glUniform1f(glGetUniformLocation(program, "physicalSpaceX"), physicalSpaceX);
 	glUniform1f(glGetUniformLocation(program, "physicalSpaceY"), physicalSpaceY);
 	glUniform1f(glGetUniformLocation(program, "physicalSpaceZ"), physicalSpaceZ);
+#ifdef SCINARIO_JELLY
+	glUniform1f(glGetUniformLocation(program, "physicalViscosity"), 20.0);
+#endif
 }
 
 void Fluid::draw() {
-	glViewport(0, 0, 1920, 1920);
+	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	glClearColor(1.0, 1.0, 1.0, 1.0);
@@ -181,20 +212,36 @@ void Fluid::draw() {
 		vboParticleForEach,
 		particleMax,
 		fb.mapPosition(),
+		fb.mapVelocity(),
 		fb.mapETC(),
 		fb.mapProperty(),
+		fb.mapNorm(),
 		modelEnv,
 		matEnvModelview,
 		fb.mapWallField());
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 
+#ifdef DEBUG_OUTPUT
 	fb.debugdraw();
+#endif
 
 	glutSwapBuffers();
 }
 
 void Fluid::update() {
+
+	if (Key::keyCheckPressed('r')) {
+		fb.initPos(
+			particleMax,
+			h,
+			physicalSpaceX,
+			physicalSpaceY,
+			physicalSpaceZ);
+	}
+
+	ui.update();
+
 	fb.outputNeighborPush();
 	glClearColor(0.0, 0.0, 0.0, 0.0); //Blue 0.0 is unavailable
 	glClearDepth(1.0);

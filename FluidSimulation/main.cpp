@@ -10,6 +10,7 @@
 #include "key.h"
 #include "fluid.h"
 #include "debug.h"
+#include "config.h"
 
 Fluid fluid;
 
@@ -30,7 +31,7 @@ void main(int argc, char **argv)
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-	glutInitWindowSize(1920, 1920);
+	glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
 	glutCreateWindow("AcornBusTwoRideEachTaste");
 	glewInit();
 

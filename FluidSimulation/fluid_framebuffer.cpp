@@ -6,13 +6,17 @@
 #include "fluid_framebuffer.h"
 #include "debug.h"
 #include "shader.h"
+#include "config.h"
 
 #include <vector>
 #include <iostream>
 
 #include "mat.h"
 
-void FluidFB::generate() {
+void FluidFB::generate(
+	unsigned int envResolutionX,
+	unsigned int envResolutionY, 
+	unsigned int envResolutionZ) {
 	glGenTextures(1, &pos);
 	glBindTexture(GL_TEXTURE_2D, pos);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -60,6 +64,14 @@ void FluidFB::generate() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG, particleSpaceW, particleSpaceH, 0, GL_RG, GL_UNSIGNED_BYTE, NULL);
+
+	glGenTextures(1, &norm);
+	glBindTexture(GL_TEXTURE_2D, norm);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, particleSpaceW, particleSpaceH, 0, GL_RGB, GL_FLOAT, NULL);
 
 	glGenTextures(1, &neighbor);
 	glBindTexture(GL_TEXTURE_2D, neighbor);
@@ -139,18 +151,20 @@ void FluidFB::generate() {
 	glBindFramebuffer(GL_FRAMEBUFFER, fbPhysicalStepPost);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pos, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, vel, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, norm, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depPhysicalStepPost, 0);
-	GLenum buf[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-	glDrawBuffers(2, buf);
+	GLenum buf[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	glDrawBuffers(3, buf);
 	fberrorecho();
 	
 	glGenFramebuffers(1, &fbPhysicalStepPostBack);
 	glBindFramebuffer(GL_FRAMEBUFFER, fbPhysicalStepPostBack);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, posback, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, velback, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, norm, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depPhysicalStepPostBack, 0);
-	GLenum buf2[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-	glDrawBuffers(2, buf2);
+	GLenum buf2[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+	glDrawBuffers(3, buf2);
 	fberrorecho();
 
 	glGenFramebuffers(1, &fbNeighborPush);
@@ -165,9 +179,9 @@ void FluidFB::generate() {
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depNeighborBlind, 0);
 	fberrorecho();
 
-	envResolutionX = 256;
-	envResolutionY = 256;
-	envResolutionZ = 256;
+	this->envResolutionX = envResolutionX;
+	this->envResolutionY = envResolutionY;
+	this->envResolutionZ = envResolutionZ;
 
 	glGenTextures(1, &env);
 	glBindTexture(GL_TEXTURE_3D, env);
@@ -181,11 +195,11 @@ void FluidFB::generate() {
 	fberrorecho();
 }
 
-void FluidFB::init(
-	unsigned int particleMax, 
-	float h, 
-	float physicalSpaceX, 
-	float physicalSpaceY, 
+void FluidFB::initPos(
+	unsigned int particleMax,
+	float h,
+	float physicalSpaceX,
+	float physicalSpaceY,
 	float physicalSpaceZ)
 {
 	//Position init
@@ -207,13 +221,21 @@ void FluidFB::init(
 	for (int i = 0; i < particleMax; i++) {
 		data.push_back(x);
 		data.push_back(y);
+#ifdef SCINARIO_JIGOK
 		data.push_back(physicalSpaceZ - z);
+#else 
+		data.push_back(z);
+#endif
 		x += sep;
 		if (x > physicalSpaceX - offset) {
 			x = sx;
 			y += sep;
 		}
+#ifdef SCINARIO_JIGOK
 		if (y > physicalSpaceY * 0.5 - offset) {
+#else 
+		if (y > physicalSpaceY * 0.3 - offset) {
+#endif
 			y = sy;
 			z += sep;
 		}
@@ -222,30 +244,39 @@ void FluidFB::init(
 			exit(1);
 			return;
 		}
-	}
+		}
 
 	glBindTexture(GL_TEXTURE_2D, pos);
 	glTexImage2D(
 		GL_TEXTURE_2D, 0,
 		GL_RGB32F,
-		particleSpaceW, particleSpaceH,  
-		0, GL_RGB, GL_FLOAT, 
+		particleSpaceW, particleSpaceH,
+		0, GL_RGB, GL_FLOAT,
 		&data[0]);
 
 	data.clear();
+}
+
+void FluidFB::init(unsigned int particleMax)
+{
+	std::vector<float> data;
 
 	//Availablize
-	for (int i = 0; i < particleMax; i++) {
+	particleActive = particleMax;
+	this->particleMax = particleMax;
+
+	//Availablize
+	for (int i = 0; i < particleActive; i++) {
 		data.push_back(1.0);
 		data.push_back(0.0);
 	}
 
 	glBindTexture(GL_TEXTURE_2D, etc);
-	glTexImage2D(
+	glTexSubImage2D(
 		GL_TEXTURE_2D, 0,
-		GL_RG32F,
-		particleSpaceW, particleSpaceH,
-		0, GL_RG, GL_FLOAT,
+		0, 0,
+		particleSpaceW, particleActive / particleSpaceW,
+		GL_RG, GL_FLOAT,
 		&data[0]);
 
 	data.clear();
@@ -382,7 +413,8 @@ void FluidFB::debugdraw() {
 	drawBuffer(vel, -0.45, 0.75, 2.0, 0.5);
 	drawBuffer(prop, -0.15, 0.75, 0.0006, 0.5);
 	drawBuffer(etc, 0.15, 0.75, 1.0, 0.0);
-	drawBuffer(neighbor, 0.55, 0.75, 1.0, 0.0);
+	drawBuffer(norm, 0.45, 0.75, 0.5, 0.5);
+	drawBuffer(neighbor, 0.75, 0.75, 1.0, 0.0);
 
 	glUseProgram(0);
 	

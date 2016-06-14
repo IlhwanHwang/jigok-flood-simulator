@@ -157,6 +157,7 @@
     <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="config.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="fluid.h" />
     <ClInclude Include="fluid_framebuffer.h" />
@@ -170,11 +171,19 @@
     <ClInclude Include="vec.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="depth_stencil_f.glsl" />
     <None Include="env_test_f.glsl" />
     <None Include="env_test_v.glsl" />
-    <None Include="fluid_render_f.glsl" />
+    <None Include="fastblur_f.glsl" />
+    <None Include="fluid_phong_f.glsl" />
+    <None Include="fluid_render_scatter_f.glsl" />
+    <None Include="fluid_render_simple_f.glsl" />
+    <None Include="framepass_v.glsl" />
+    <None Include="fluid_render_absorb_f.glsl" />
+    <None Include="fluid_render_normal_f.glsl" />
     <None Include="fluid_render_g.glsl" />
     <None Include="fluid_render_v.glsl" />
+    <None Include="framepass_g.glsl" />
     <None Include="kernel.glsl" />
     <None Include="linecube_f.glsl" />
     <None Include="linecube_v.glsl" />
@@ -185,6 +194,7 @@
     <None Include="neighbor_push_v.glsl" />
     <None Include="neighbor_blind_f.glsl" />
     <None Include="phong_f.glsl" />
+    <None Include="phong_g.glsl" />
     <None Include="phong_v.glsl" />
     <None Include="physical.glsl" />
     <None Include="physical_step_post_f.glsl" />

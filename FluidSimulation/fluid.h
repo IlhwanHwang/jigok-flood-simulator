@@ -37,6 +37,10 @@ private:
 	const unsigned int neighborSpaceW;
 	const unsigned int neighborSpaceH;
 
+	const unsigned int envResolutionX;
+	const unsigned int envResolutionY;
+	const unsigned int envResolutionZ;
+
 	GLuint vboParticleForEach;
 	GLuint vboNeighborForEach;
 

@@ -83,15 +83,15 @@
     <ClInclude Include="model.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="fluid_render_v.glsl">
       <Filter>셰이더 파일</Filter>
     </None>
     <None Include="fluid_render_g.glsl">
-      <Filter>셰이더 파일</Filter>
-    </None>
-    <None Include="fluid_render_f.glsl">
       <Filter>셰이더 파일</Filter>
     </None>
     <None Include="linecube_v.glsl">
@@ -167,6 +167,36 @@
       <Filter>셰이더 파일</Filter>
     </None>
     <None Include="env_test_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="fluid_render_normal_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="fluid_render_absorb_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="framepass_g.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="framepass_v.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="fastblur_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="fluid_phong_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="depth_stencil_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="phong_g.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="fluid_render_scatter_f.glsl">
+      <Filter>셰이더 파일</Filter>
+    </None>
+    <None Include="fluid_render_simple_f.glsl">
       <Filter>셰이더 파일</Filter>
     </None>
   </ItemGroup>

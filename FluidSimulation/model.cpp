@@ -155,5 +155,5 @@ void Model::draw() {
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
-	errorecho("Model drawing");
+	//errorecho("Model drawing");
 }

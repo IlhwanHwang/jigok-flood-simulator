@@ -204,6 +204,7 @@ void FluidFB::initPos(
 {
 	//Position init
 	std::vector<float> data;
+	std::vector<float> data2;
 
 	float sep = h * 0.5;
 	float offset = h * 2.0;
@@ -221,17 +222,20 @@ void FluidFB::initPos(
 	for (int i = 0; i < particleMax; i++) {
 		data.push_back(x);
 		data.push_back(y);
-#ifdef SCINARIO_JIGOK
+#ifdef SCENARIO_JIGOK
 		data.push_back(physicalSpaceZ - z);
 #else 
 		data.push_back(z);
 #endif
+		data2.push_back(0.0);
+		data2.push_back(0.0);
+		data2.push_back(0.0);
 		x += sep;
 		if (x > physicalSpaceX - offset) {
 			x = sx;
 			y += sep;
 		}
-#ifdef SCINARIO_JIGOK
+#ifdef SCENARIO_JIGOK
 		if (y > physicalSpaceY * 0.5 - offset) {
 #else 
 		if (y > physicalSpaceY * 0.3 - offset) {
@@ -253,6 +257,13 @@ void FluidFB::initPos(
 		particleSpaceW, particleSpaceH,
 		0, GL_RGB, GL_FLOAT,
 		&data[0]);
+	glBindTexture(GL_TEXTURE_2D, vel);
+	glTexImage2D(
+		GL_TEXTURE_2D, 0,
+		GL_RGB32F,
+		particleSpaceW, particleSpaceH,
+		0, GL_RGB, GL_FLOAT,
+		&data2[0]);
 
 	data.clear();
 }

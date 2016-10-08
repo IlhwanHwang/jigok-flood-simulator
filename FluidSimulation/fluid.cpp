@@ -21,7 +21,7 @@ Fluid::Fluid() :
 
 	h	(0.02285),
 
-#ifdef SCINARIO_NARROW
+#ifdef SCENARIO_NARROW
 	physicalSpaceX	(0.4),
 	physicalSpaceY	(2.0),
 	physicalSpaceZ	(1.0),
@@ -81,7 +81,7 @@ void Fluid::init() {
 		physicalSpaceY,
 		physicalSpaceZ);
 	fb.init(particleMax);
-#ifdef SCINARIO_JIGOK
+#ifdef SCENARIO_JIGOK
 	fb.initEnv(
 		modelEnv,
 		matEnvModelview,
@@ -195,12 +195,14 @@ void Fluid::uniformPhysical(GLuint program) {
 	glUniform1f(glGetUniformLocation(program, "physicalSpaceX"), physicalSpaceX);
 	glUniform1f(glGetUniformLocation(program, "physicalSpaceY"), physicalSpaceY);
 	glUniform1f(glGetUniformLocation(program, "physicalSpaceZ"), physicalSpaceZ);
-#ifdef SCINARIO_JELLY
+#ifdef SCENARIO_JELLY
 	glUniform1f(glGetUniformLocation(program, "physicalViscosity"), 20.0);
 #endif
 }
 
 void Fluid::draw() {
+	glutSwapBuffers();
+
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -225,8 +227,6 @@ void Fluid::draw() {
 #ifdef DEBUG_OUTPUT
 	fb.debugdraw();
 #endif
-
-	glutSwapBuffers();
 }
 
 void Fluid::update() {

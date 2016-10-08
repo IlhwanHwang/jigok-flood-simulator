@@ -54,8 +54,8 @@ void main() {
 					if (length(dpos) < h) {
 						if (dot(dpos, dpos) > 0.0) { //No self interaction
 							forcePressure += (
-								pressure / pow(density, 2.0) +
-								opressure / pow(odensity, 2.0) * wspikygrad(dpos)
+								(pressure / pow(density, 2.0) +
+								opressure / pow(odensity, 2.0)) * wspikygrad(dpos)
 							);
 							forceViscosity += (
 								(ovel - vel) * wviscositylapl(length(dpos)) / odensity

@@ -81,7 +81,7 @@ void FluidUI::init(
 	texBloom.load("image\\bloom.png");
 	texColormap.load("image\\colormap.png");
 
-#ifdef SCINARIO_JIGOK
+#ifdef SCENARIO_JIGOK
 	//Texture
 	{
 		texAroundPond.load("Image\\around_pond.png");
@@ -475,7 +475,7 @@ void FluidUI::draw(
 	modelview *= Matrix::Scale(scale, scale, scale);
 	modelview *= Matrix::Translate(-vec4(physicalSpaceX, physicalSpaceY, physicalSpaceZ, 0.0) * 0.5);
 
-	projection *= Matrix::Perspective(fov, 1.0, 1.0, viewDist * 30.0 * scale);
+	projection *= Matrix::Perspective(fov, (float)SCREEN_WIDTH / SCREEN_HEIGHT, 1.0, viewDist * 30.0 * scale);
 	projection *= Matrix::LookAt(eye, at, up);
 
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -722,7 +722,7 @@ void FluidUI::draw(
 		glDisableVertexAttribArray(0);
 	}
 
-#ifdef SCINARIO_JIGOK
+#ifdef SCENARIO_JIGOK
 	//Environment
 	{
 		glUseProgram(shdPhong);

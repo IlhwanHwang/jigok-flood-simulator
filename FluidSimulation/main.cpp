@@ -15,7 +15,7 @@
 Fluid fluid;
 
 void update(int cnt) {
-	glutTimerFunc(16, update, cnt + 1);
+	glutTimerFunc(100, update, cnt + 1);
 
 	//if (Key::keyCheckOn('a')) {
 		fluid.update();

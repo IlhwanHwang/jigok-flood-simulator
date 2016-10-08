@@ -5,13 +5,13 @@
 
 #ifndef CONFIGURE
 #define CONFIGURE
-#define SCREEN_WIDTH 1600
-#define SCREEN_HEIGHT 1600
+#define SCREEN_WIDTH 1920
+#define SCREEN_HEIGHT 1080
 
-#define SIMPLE_RENDER
-#define SCINARIO_NARROW
-//#define SCINARIO_JIGOK
-//#define SCINARIO_JELLY
-#define DEBUG_OUTPUT
+//#define SIMPLE_RENDER
+//#define SCENARIO_NARROW
+#define SCENARIO_JIGOK
+//#define SCENARIO_JELLY
+//#define DEBUG_OUTPUT
 
 #endif

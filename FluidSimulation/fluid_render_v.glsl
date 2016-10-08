@@ -16,6 +16,6 @@ void main() {
 	float available = etc.x;
 
 	gl_Position = matProjection * matModelView * vec4(pos, 1.0);
-	gl_Position.w *= available; //Clip out when not available or located
+	gl_Position.w *= available; //Clip out when not available
 	gpid = pid;
 }

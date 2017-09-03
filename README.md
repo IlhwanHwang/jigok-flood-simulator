@@ -4,6 +4,8 @@ jigok-flood-simulator-opengl
 
 본 프로젝트는 포항공과대학교 2016년 봄학기 컴퓨터그래픽스(CSED451) 학기 프로젝트로 제작되었다.
 
+[데모 영상][https://www.facebook.com/ilhwan.hwang.96/videos/1233028630071308/]
+
 # Introduction
 
 이 프로젝트의 주제는 ‘지곡회관 홍수 시뮬레이터’이다. 프로젝트의 이름에서부터 알 수 있듯 Modeling과 Texture mapping, 그리고 다양한 shading 기법을 이용하여 지곡회관과 그 주변을 사

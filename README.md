@@ -4,7 +4,7 @@ jigok-flood-simulator-opengl
 
 본 프로젝트는 포항공과대학교 2016년 봄학기 컴퓨터그래픽스(CSED451) 학기 프로젝트로 제작되었다.
 
-[데모 영상][https://www.facebook.com/ilhwan.hwang.96/videos/1233028630071308/]
+[데모 영상][video]
 
 # Introduction
 
@@ -37,3 +37,5 @@ jigok-flood-simulator-opengl
 # Futher information
 
 자세한 이론적 배경이나 설계, 참고자료는 같이 첨부된 보고서에 적혀있다.
+
+[video]: https://www.facebook.com/ilhwan.hwang.96/videos/1233028630071308/

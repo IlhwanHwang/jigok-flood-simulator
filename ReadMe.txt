@@ -13,9 +13,9 @@ Github
 이때 fluid simulation을 여려가지로 할 수있는데, 이는 config.h를 조작하므로써 설정을 바꿀 수 있다.
 (기본적으로 SIMPLE_RENDER 부터 SCENARIO_JELLY 까지 다 주석처리 되어있다고 생각한다.)
 
-1. SCENARIO_NARRAW만 주석 해제 할 경우 일반적인 물의 시뮬레이션을 볼 수 있다.
+1. SCENARIO_NARROW만 주석 해제 할 경우 일반적인 물의 시뮬레이션을 볼 수 있다.
 
-2. SCENARIO_NARRAW, SCENARIO_JELLY를 주석 해제 할 경우 점성이 높은 물의 시뮬레이션을 볼 수 있다.
+2. SCENARIO_NARROW, SCENARIO_JELLY를 주석 해제 할 경우 점성이 높은 물의 시뮬레이션을 볼 수 있다.
 
 3. SCENARIO_JIGOK만 주석 해제 할 경우 지곡회관오브젝트를 불러오며, 우리의 목표인 지곡회관에 홍수 시뮬레이션을 할 수 있다.
 

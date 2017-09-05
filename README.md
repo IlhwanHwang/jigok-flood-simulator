@@ -14,8 +14,8 @@ jigok-flood-simulator-opengl
 # Dependencies
 
 	Visual Studio 2017
-	freeGLUT 3.0.0
-	GLEW 2.1.0
+	freeGLUT 2.8.1
+	GLEW 2.0.0
 
 # How to use
 
